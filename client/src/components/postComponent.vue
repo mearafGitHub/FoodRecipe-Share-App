@@ -8,7 +8,10 @@
         <span class="font-weight-light">| Enjoy Food Recipes</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-  
+      
+      <v-flex v-if= "authorization" >
+        <h5 class="username" v-if= "authorization" >Welcome,{{ user.username }} !</h5>
+      </v-flex>
       <v-tooltip bottom>
         <v-icon slot="activator" color="pimary" dark @click="$router.push({name:'home'})">home</v-icon>
         <span>Home | Latest Recipe</span>
@@ -18,7 +21,15 @@
         About
         </v-btn>
       <v-spacer></v-spacer>
-      <v-btn flat dark >Privacy Terms </v-btn>
+      <v-flex v-if="admin" >
+        
+          <adminReview/>
+   
+      </v-flex>
+      <v-spacer></v-spacer>
+      <v-flex v-if= "authorization" >
+        <popcreate/>  
+      </v-flex>
       <v-spacer></v-spacer>
 
       <v-flex v-if= "!authorization">
@@ -31,29 +42,24 @@
         <popsignup/>
         <span color="white--text">Sign Up</span>
       </v-flex>
-      <v-spacer></v-spacer>
-      <v-flex v-if= "authorization" >
-        <popcreate/>
+      
+      
+     
+      
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+     <v-btn v-if= "authorization" flat dark  @click="signOut" >
+        Sign Out
+        </v-btn>
         
-      </v-flex>
-      <v-flex v-if= "authorization" >
-        <h5 class="username" v-if= "authorization" >Welcome,{{ user.username }} !</h5>
-      </v-flex>
-      <v-spacer></v-spacer>
-      <v-flex v-if="admin" >
-        
-          <adminReview/>
-   
-      </v-flex>
-
-      <v-toolbar-items>
-        <v-btn v-if= "authorization" flat info @click="signOut">Sign Out</v-btn>
-      </v-toolbar-items>
+     
      <v-spacer></v-spacer>
-        <v-toolbar-items>
-        <v-btn v-if= "authorization" flat info @click="$router.push({name: 'profile'})">Profile</v-btn>
+        
+          <v-btn v-if= "authorization" flat dark  @click="$router.push({name: 'profile'})" >
+            My Profile
+        </v-btn>
+        
 <v-spacer></v-spacer>
-      </v-toolbar-items> 
     </v-toolbar>
    
      
@@ -81,16 +87,12 @@
           <v-img :aspect-ratio="16/9" src="d.jpg"></v-img>
 
           <v-card flat >
-            <v-card-text >
-              <h5 color="primary">{{ item.name }}</h5>
+            <v-card-text>
+              <h4 color="primary">{{ item.name }}</h4>
               <div class="gray--text">{{ item.shortdesc }}</div>
               <div class="gray--text">At:{{item.createdAt}}</div>
               <div class="gray--text">By:{{item.by}}</div>
-              <div>
-                <span
-                  v-if="item && item.createdAt"
-                >{{ `${item.createdAt.getDate()}/${item.createdAt.getMonth()}/${item.createdAt.getFullYear()}`}}</span>
-              </div>
+             <div>createdAt:{{item.createdAt }}</div>
             </v-card-text>
 
             <v-card-actions>
@@ -99,13 +101,13 @@
                 <v-icon small color="primary" @click="add">favorite</v-icon>
                 <span>{{count}}</span>
               </v-btn>
-              <v-spacer></v-spacer>
+              
              
               <v-dialog max-width="1200px">
                 <v-icon slot="activator" color="primary">list</v-icon>
  
                           <v-card flat >
-                             <v-img :aspect-ratio="16/6" src="d.jpg"></v-img>
+                             <v-img :aspect-ratio="16/8" src="d.jpg"></v-img>
                           <v-card-text>
                            
                                   <h1 class="header" align="center">{{ item.name }}</h1>
@@ -116,15 +118,11 @@
                                   <h5 align="center" class="text"> Cuisine: {{ item.cuisine }}</h5>
                                   <h5 align="center" class="text"> created By: {{ item.by }}</h5>
                                   <div align="center" class="grray--text">At:{{item.createdAt}}</div>
-                                       <div>
-                                        <span
-                                       v-if="item && item.createdAt"
-                                      >{{ `${item.createdAt.getDate()}/${item.createdAt.getMonth()}/${item.createdAt.getFullYear()}`}}</span>
-                                      </div>
+                                     <div>createdAt:{{item.createdAt }}</div>
                                       <h3 align="center">The recipe steps</h3>
                                       <hr>
                                       <p align="center">{{ item.steps }}</p>
-                                      <hr>
+                                    
                                       <br>
                         
                              
@@ -136,7 +134,7 @@
                          <span>{{count}}</span>
                              </v-btn>
 
-                           
+                            
                      </v-card-actions>
                    </v-card> 
               </v-dialog>
@@ -188,7 +186,7 @@ export default {
           shortdesc: "short description",
           at: "date created ",
           file: "file name",
-          likes: ""
+          likes: 0
         }
       ]
     };
@@ -252,6 +250,9 @@ export default {
    
   }
 };
+
+
+//`${item.createdAt.getDate()}/${item.createdAt.getMonth()}/${item.createdAt.getFullYear()}`
 </script>
 
 <style scoped>

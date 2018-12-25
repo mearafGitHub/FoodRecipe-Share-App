@@ -11,7 +11,7 @@ const users = db.get('users');
         
         if (user) {
            console.log('this user aleady exist');
-          // next();
+           next();
         } else {
           
             bcrypt.hash('Town_Admin_In', 10).then((hashedPW) => {

@@ -8,7 +8,10 @@
         <span class="font-weight-light">| Enjoy Food Recipes</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-  
+      
+      <v-flex v-if= "authorization" >
+        <h5 class="username" v-if= "authorization" >Welcome,{{ user.username }} !</h5>
+      </v-flex>
       <v-tooltip bottom>
         <v-icon slot="activator" color="pimary" dark @click="$router.push({name:'home'})">home</v-icon>
         <span>Home | Latest Recipe</span>
@@ -18,7 +21,15 @@
         About
         </v-btn>
       <v-spacer></v-spacer>
-      <v-btn flat dark >Privacy Terms </v-btn>
+      <v-flex v-if="admin" >
+        
+          <adminReview/>
+   
+      </v-flex>
+      <v-spacer></v-spacer>
+      <v-flex v-if= "authorization" >
+        <popcreate/>  
+      </v-flex>
       <v-spacer></v-spacer>
 
       <v-flex v-if= "!authorization">
@@ -31,29 +42,24 @@
         <popsignup/>
         <span color="white--text">Sign Up</span>
       </v-flex>
-      <v-spacer></v-spacer>
-      <v-flex v-if= "authorization" >
-        <popcreate/>
+      
+      
+     
+      
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+     <v-btn v-if= "authorization" flat dark  @click="signOut" >
+        Sign Out
+        </v-btn>
         
-      </v-flex>
-      <v-flex v-if= "authorization" >
-        <h5 class="username" v-if= "authorization" >Welcome,{{ user.username }} !</h5>
-      </v-flex>
-      <v-spacer></v-spacer>
-      <v-flex v-if="admin" >
-        
-          <adminReview/>
-   
-      </v-flex>
-
-      <v-toolbar-items>
-        <v-btn v-if= "authorization" flat info @click="signOut">Sign Out</v-btn>
-      </v-toolbar-items>
+     
      <v-spacer></v-spacer>
-        <v-toolbar-items>
-        <v-btn v-if= "authorization" flat info @click="$router.push({name: 'profile'})">Profile</v-btn>
+        
+          <v-btn v-if= "authorization" flat dark  @click="$router.push({name: 'profile'})" >
+            My Profile
+        </v-btn>
+        
 <v-spacer></v-spacer>
-      </v-toolbar-items> 
     </v-toolbar>
    
      
@@ -86,11 +92,7 @@
               <div class="gray--text">{{ item.shortdesc }}</div>
               <div class="gray--text">At:{{item.createdAt}}</div>
               <div class="gray--text">By:{{item.by}}</div>
-              <div>
-                <span
-                  v-if="item && item.createdAt"
-                >{{ `${item.createdAt.getDate()}/${item.createdAt.getMonth()}/${item.createdAt.getFullYear()}`}}</span>
-              </div>
+             <div>createdAt:{{item.createdAt }}</div>
             </v-card-text>
 
             <v-card-actions>
@@ -116,11 +118,7 @@
                                   <h5 align="center" class="text"> Cuisine: {{ item.cuisine }}</h5>
                                   <h5 align="center" class="text"> created By: {{ item.by }}</h5>
                                   <div align="center" class="grray--text">At:{{item.createdAt}}</div>
-                                       <div>
-                                        <span
-                                       v-if="item && item.createdAt"
-                                      >{{ `${item.createdAt.getDate()}/${item.createdAt.getMonth()}/${item.createdAt.getFullYear()}`}}</span>
-                                      </div>
+                                     <div>createdAt:{{item.createdAt }}</div>
                                       <h3 align="center">The recipe steps</h3>
                                       <hr>
                                       <p align="center">{{ item.steps }}</p>
@@ -133,7 +131,7 @@
                         <v-spacer></v-spacer>
                          <v-btn icon flat>
                          <v-icon small color="primary" @click="add">favorite</v-icon>
-                         <span>{{count}}</span>
+                         <span>{{item.likes}}</span>
                              </v-btn>
 
                             
@@ -188,7 +186,7 @@ export default {
           shortdesc: "short description",
           at: "date created ",
           file: "file name",
-          likes: ""
+          likes: 0
         }
       ]
     };
@@ -241,7 +239,7 @@ created () {
     add() {
       this.count = this.count + 1;
       this.item.likes = this.count;
-      return this.count;
+      return this.item.likes ;
     },
     signOut() {
       this.authorization = false;

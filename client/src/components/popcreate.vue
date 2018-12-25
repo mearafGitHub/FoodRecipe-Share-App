@@ -51,10 +51,10 @@
 <script>
 import axios from "axios";
 const URL = 'http://localhost:5000/recipes/create/';
-const profUrl = 'http://localhost:5000/api/user/profiles/publish/';
+//const profUrl = 'http://localhost:5000/api/user/profiles/publish/';
 
 const TokenUrl = "http://localhost:5000";
-const ProfileUrl = "http://localhost:5000/api/user/profiles/";
+//const ProfileUrl = "http://localhost:5000/api/user/profiles/";
 
 export default {
   name: "popcreate",
@@ -105,7 +105,7 @@ export default {
       console.log(this.item);
      
       axios
-        .post(profUrl, { 
+        .post('http://localhost:5000/recipes/create/', { 
                   name: this.item.name,
                   steps: this.item.steps,
                  

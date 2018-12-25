@@ -42,38 +42,25 @@ router.get('/list', (req, res) =>{
 
 });
 router.post('/create', (req, res) =>{
-   recipes.find({
-      name: req.body.name
-  }).then(recipe => {
-      //if user is undifined it is not in db otherwise this is user is duplicate user
-      // so check as follows
-      if (recipe) {
-          //this user aleady exist, respond with error
-          const err = Error('other Recipe of such Exist! Please try an other one.');
-          res.json({
-              err
-          });
-          res.status(409);
-          next(err);
-      } 
-      else {
-              let newRecipe = {
-                  name: req.body.name,
-                  steps: req.body.steps,
+
+
+            //   let newRecipe = {
+            //       name: req.body.name,
+            //       steps: req.body.steps,
                  
-                  file: req.body.file.name,
-                  shortdesc: req.body.shortdesc,
-                  category: req.body.category,
-                  by: req.body.by,
-                  cuisine: req.body.cuisine,
-                  createdAt: req.body.createdAt
+            //       file: req.body.file.name,
+            //       shortdesc: req.body.shortdesc,
+            //       category: req.body.category,
+            //       by: req.body.by,
+            //       cuisine: req.body.cuisine,
+            //       createdAt: req.body.createdAt
                   
-              };
-              console.log('the new recipe is:', newRecipe);
+            //   };
+              console.log('the new recipe is:', req.body);
              
               
-              recipes.insert(newRecipe).then(insertedRecipe => {
-                 
+              //recipes.insert(newRecipe).then(insertedRecipe => {
+                recipes.insert(req.body).then(insertedRecipe => { 
                   console.log('insertedRecipe is:', insertedRecipe);
                  
 
@@ -81,10 +68,26 @@ router.post('/create', (req, res) =>{
                   console.log('insert error:', error);
               }));
          // });
-      }
+
 
 });
 
+// router.delete('/:id', async (req, res)=>{
+//   const posts = await loadPostCollection();
+//   await recipes.deleteOne({ _id: new mongodb.ObjectID(req.params.id)});
+//   res.status(200).send('one row deleted ');
+// });
+
+router.delete('/:id', (req, res) => {
+  //users.remove({ woot: 'foo' })
+  recipes.remove({ _id: req.params.id });
+  res.status(200).send('one recipe deleted ');
+});
+
+
+router.delete('/remove', (req, res) => {
+  users.remove({ _id: req.params.id })
+  res.status(200).send('one recipe deleted ');
 });
 
 module.exports = router;

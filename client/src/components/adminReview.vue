@@ -71,11 +71,12 @@
               <h4 color="primary">{{ item.name }}</h4>
               <div class="gray--text">{{ item.shortdesc }}</div>
               <div class="gray--text">At:{{item.createdAt}}</div>
-              <div>
+              <!-- <div>
                 <span
                   v-if="item && item.createdAt"
                 >{{ `${item.createdAt.getDate()}/${item.createdAt.getMonth()}/${item.createdAt.getFullYear()}`}}</span>
-              </div>
+              </div> -->
+              <div>createdAt:{{item.createdAt }}</div>
             </v-card-text>
 
             <v-card-actions>
@@ -86,7 +87,7 @@
               </v-btn>
               
               <v-btn icon v-if="user.username = 'Town_Admin'">
-                <v-icon small @click="remove">delete</v-icon>
+                <v-icon small @click="remove(item._id)">delete</v-icon>
               </v-btn>
               <v-dialog max-width="1200px">
                 <v-icon slot="activator" color="primary">list</v-icon>
@@ -103,11 +104,12 @@
                                   <h5 align="center" class="text"> Cuisine: {{ item.cuisine }}</h5>
                                   <h5 align="center" class="text"> created By: {{ item.by }}</h5>
                                   <div align="center" class="grray--text">At:{{item.createdAt}}</div>
-                                       <div>
+                                       <!-- <div>
                                         <span
                                        v-if="item && item.createdAt"
                                       >{{ `${item.createdAt.getDate()}/${item.createdAt.getMonth()}/${item.createdAt.getFullYear()}`}}</span>
-                                      </div>
+                                      </div> -->
+                                      <div>createdAt:{{item.createdAt }}</div>
                                       <h3>The recipe steps</h3>
                                       <hr>
                                       <p align="center">{{ item.steps }}</p>
@@ -122,7 +124,7 @@
                              </v-btn>
 
                             <v-btn icon v-if=" user.username = 'Town_Admin'">
-                           <v-icon @click="remove">delete</v-icon>
+                           <v-icon @click="remove(item._id)">delete</v-icon>
                               </v-btn>
                      </v-card-actions>
                    </v-card> 
@@ -149,8 +151,9 @@ import popsignin from "./popsignin";
 import popsignup from "./popsignup";
 import popcreate from "./popcreate";
 const axios = require('axios');
-const URL = 'http://localhost:5000/recipes/';
-
+const listURL = 'http://localhost:5000/recipes/';
+const idURL = 'http://localhost:5000/recipes/:id';
+const deleteURL = 'http://localhost:5000/recipes/remove/';
 const TokenUrl = "http://localhost:5000";
 
 export default {
@@ -176,7 +179,7 @@ export default {
           shortdesc: "short description",
           at: "date created ",
           file: "file name",
-          likes: ""         
+          likes: 0         
         }
       ] 
     };
@@ -207,7 +210,7 @@ export default {
   },
 created () {
     // this.items=
-   axios.get(URL) 
+   axios.get(listURL) 
   .then( (response)=>{
  
     console.log('the Response: ',response.data);
@@ -226,15 +229,33 @@ created () {
       this.count = this.count + 1;
       this.item.likes=this.count;
       return (this.count);
-    }, 
+   }, 
+  //   getRecipes(){
+  //      axios.get(listURL) 
+  // .then( (response)=>{
+ 
+  //   console.log('the Response: ',response.data);
+
     
-    remove(){
-      
-    },
+  //    this.items= {...response.data}
+  //    console.log('the item array: ', this.items);
+  // }) .catch(function (error) {
+  //       console.log(error);
+        
+  //     });
+  //   },
+   
     signOut(){
       this.authorization = false;
       localStorage.removeItem('token');
       this.$router.push({name: 'home'});
+    },
+    // remove(id){
+    //   axios.delete(`${deleteURL}${id}`)
+    // },
+   remove(id){
+      axios.delete(`${listURL}${id}`);
+      
     }
     
   }

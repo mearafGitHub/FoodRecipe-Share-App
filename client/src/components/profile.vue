@@ -8,18 +8,18 @@
         <span class="font-weight-light   white--text" > | What do you want to publish today?</span>
       </v-toolbar-title>
        <v-spacer></v-spacer>
-      <v-toolbar-actions>
+      <v-toolbar-items>
          
           <v-flex>
               <popcreate/>
           </v-flex>
-      </v-toolbar-actions>
+      </v-toolbar-items>
      <v-spacer></v-spacer>
       <v-btn @click="signOut" flat color="light">
         <span color="primary">Sign Out</span>
         <v-icon right color="accent">exit_to_app</v-icon>
       </v-btn>
-    </v-toolbar>
+    
     <div> <p class="er" color="white--text" v-if="error"  v-html="error" >{{ error }}</p> </div>
 
     <v-navigation-drawer app v-model="drawer" class="primary" >
@@ -97,7 +97,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-
+    </v-toolbar>
   </nav>
 </template>
 
@@ -106,7 +106,8 @@
 import popcreate from "./popcreate";
 
 const TokenUrl = "http://localhost:5000";
-const ProfileUrl = "http://localhost:5000/api/user/profiles/";
+//const ProfileUrl = "http://localhost:5000/api/user/profiles/";
+const URL = 'http://localhost:5000/recipes/create/';
 export default {
   name: "profile",
   components: {
@@ -146,7 +147,7 @@ export default {
           this.user = result.user;
           console.log("this.user is:", this.user);
           this.authorization = true;
-          this.getRecipes();
+         // this.getRecipes();
         } else {
           this.signOut();
         }
@@ -161,7 +162,7 @@ export default {
   methods: {
     //later try with axios
     getRecipes() {
-      fetch(`${TokenUrl}/api/user/profiles`, {
+      fetch(URL, {
         headers: {
           authorization: `Bearer ${localStorage.token}`
         }
