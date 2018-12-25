@@ -52,37 +52,13 @@ export default {
   },
  methods: {   
    async signin() {
-     //this.loading = true;
-      // axios
-      //     .post(userUrl, this.item)
-      //     .then((response)=> {
-            
-      //        //console.log('user trying to sign in:', this.item);
-      //        localStorage.token = response;
-      //         //localStorage.setItem('Token', response.data.token);
-
-      //       setTimeout(()=>{
-      //          //this.loading = false;
-      //          this.$router.push('/signin');
-      //       },10);
-           
-      //      // console.log(result);
-           
-      //     })
-      //     .catch((error) => {
-      //       //this.loading = false;
-      //       this.errorMsg = error.message || response.erro.message;
-      //       console.log(error);
-             
-      //     });
-
-
       try{
         var result = await axios.post(userUrl,this.item);
           console.log('user trying to sign in:', this.item);
           console.log('The result from server:', result);
          localStorage.token = result.data.token;
           console.log('The token sent is:', result.data.token);
+          
     //     localStorage.setItem('TOKEN',responce.token);
     //     localStorage.setItem('USER',responce.user);
             setTimeout(()=>{
@@ -93,7 +69,7 @@ export default {
      catch(error){
       console.log(err);
       this.errorMsg = error.message || response.error.message;
-    //   this.errorMsg=err.message;// && err.responce && err.responce.data && err.responce.data.error;
+   
     }
    }
   } 

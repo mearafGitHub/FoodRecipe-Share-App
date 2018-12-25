@@ -149,7 +149,7 @@ import popsignin from "./popsignin";
 import popsignup from "./popsignup";
 import popcreate from "./popcreate";
 const axios = require('axios');
-const URL = 'http://localhost:5000/recipes/list/';
+const URL = 'http://localhost:5000/recipes/';
 
 const TokenUrl = "http://localhost:5000";
 
@@ -188,7 +188,7 @@ export default {
       },
     }).then(res=> res.json())
     .then((result)=>{
-     // 
+    
       console.log('result.user is:',result.user);
       console.log('result is :',result);
       if(result.user){
@@ -196,18 +196,31 @@ export default {
         this.authorization = true;
       }
       else{
-        //if no user/ tiken exprd ot logged out
-       // localStorage.removeItem('token');
-       //this.$router.push('/login');
+        
        this.signOut();
       }
     }).catch((err)=>{
       console.log(err);
       this.error = err.message || response.err.message;
-    //   this.errorMsg=err.message;// && err.responce && err.responce.data && err.responce.data.error;
+   
     });
   },
-  
+created () {
+    // this.items=
+   axios.get(URL) 
+  .then( (response)=>{
+ 
+    console.log('the Response: ',response.data);
+
+    
+     this.items= {...response.data}
+     console.log('the item array: ', this.items);
+  }) .catch(function (error) {
+        console.log(error);
+        
+      });
+   
+  },
   methods: {
       add: function() {
       this.count = this.count + 1;
@@ -239,3 +252,5 @@ export default {
   color: white;
 }
 </style>
+
+

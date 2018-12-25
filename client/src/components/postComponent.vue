@@ -81,8 +81,8 @@
           <v-img :aspect-ratio="16/9" src="d.jpg"></v-img>
 
           <v-card flat >
-            <v-card-text>
-              <h4 color="primary">{{ item.name }}</h4>
+            <v-card-text >
+              <h5 color="primary">{{ item.name }}</h5>
               <div class="gray--text">{{ item.shortdesc }}</div>
               <div class="gray--text">At:{{item.createdAt}}</div>
               <div class="gray--text">By:{{item.by}}</div>
@@ -99,15 +99,13 @@
                 <v-icon small color="primary" @click="add">favorite</v-icon>
                 <span>{{count}}</span>
               </v-btn>
-              
-              <v-btn icon>
-                <v-icon small>bookmark</v-icon>
-              </v-btn>
+              <v-spacer></v-spacer>
+             
               <v-dialog max-width="1200px">
                 <v-icon slot="activator" color="primary">list</v-icon>
  
                           <v-card flat >
-                             <v-img :aspect-ratio="16/8" src="d.jpg"></v-img>
+                             <v-img :aspect-ratio="16/6" src="d.jpg"></v-img>
                           <v-card-text>
                            
                                   <h1 class="header" align="center">{{ item.name }}</h1>
@@ -138,9 +136,7 @@
                          <span>{{count}}</span>
                              </v-btn>
 
-                            <v-btn icon>
-                           <v-icon small>bookmark</v-icon>
-                              </v-btn>
+                           
                      </v-card-actions>
                    </v-card> 
               </v-dialog>
@@ -205,7 +201,7 @@ export default {
     })
       .then(res => res.json())
       .then(result => {
-        //
+      
         console.log("result.user is:", result.user);
         console.log("result is :", result);
         if (result.user) {
@@ -228,11 +224,13 @@ export default {
     // this.items=
    axios.get(listURL) 
   .then( (response)=>{
-  
-    console.log(response.data);
-    return response.data;
-  })
-      .catch(function (error) {
+ 
+    console.log('the Response: ',response.data);
+
+    
+     this.items= {...response.data}
+     console.log('the item array: ', this.items);
+  }) .catch(function (error) {
         console.log(error);
         
       });
@@ -249,7 +247,8 @@ export default {
       this.authorization = false;
       localStorage.removeItem("token");
       this.$router.push({ name: "post" });
-    }
+    },
+    
    
   }
 };

@@ -100,9 +100,7 @@
                 <span>{{count}}</span>
               </v-btn>
               
-              <v-btn icon>
-                <v-icon small>bookmark</v-icon>
-              </v-btn>
+             
               <v-dialog max-width="1200px">
                 <v-icon slot="activator" color="primary">list</v-icon>
  
@@ -126,7 +124,7 @@
                                       <h3 align="center">The recipe steps</h3>
                                       <hr>
                                       <p align="center">{{ item.steps }}</p>
-                                      <hr>
+                                    
                                       <br>
                         
                              
@@ -138,9 +136,7 @@
                          <span>{{count}}</span>
                              </v-btn>
 
-                            <v-btn icon>
-                           <v-icon small>bookmark</v-icon>
-                              </v-btn>
+                            
                      </v-card-actions>
                    </v-card> 
               </v-dialog>
@@ -221,18 +217,20 @@ export default {
       .catch(err => {
         console.log(err);
         this.error = err.message || err.message;
-        //   this.errorMsg=err.message;// && err.responce && err.responce.data && err.responce.data.error;
+       
       });
   },
-  created () {
-    //   this.items= 
-axios.get(listURL) 
+created () {
+    // this.items=
+   axios.get(listURL) 
   .then( (response)=>{
-  
-    console.log(response.data);
-    return response.data;
-  })
-      .catch(function (error) {
+ 
+    console.log('the Response: ',response.data);
+
+    
+     this.items= {...response.data}
+     console.log('the item array: ', this.items);
+  }) .catch(function (error) {
         console.log(error);
         
       });
