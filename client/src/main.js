@@ -14,8 +14,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import router from './router'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
-import store from './store/store'
-import {  sync } from 'vuex-router-sync'
+//import store from './store/store'
+//import {  sync } from 'vuex-router-sync'
 
 //Vue.prototype.$bus = new Vue({});
 Vue.use(VueRouter);
@@ -29,10 +29,10 @@ Vue.use(BootstrapVue);
 
 Vue.config.productionTip = false
 
-sync(store, router);
+//sync(store, router);
 
 new Vue({
   router,
-  store,
+ // store,
   render: h => h(App),
 }).$mount('#app')

@@ -5,7 +5,11 @@
    
         <v-card xs12 sm6 md4 lg3 offset-sm3>
           <h1 class="primary  pt-2 pb-2" dark >Sign In</h1>
-          <div v-if="error" class="error" v-html="error"/>
+          <div v-if="loading">
+          <img  src="../assets/Flickr-1.2s-200px.svg" alt=""/>
+        </div> 
+         <div> <p class="er" color="white--text" v-if="errorMsg"  v-html="errorMsg" >{{ errorMsg }}</p> </div>
+    
           <v-form class="px-3 mx-3">
             <v-text-field primary prepend-icon="person" label=" Username " v-model="item.username"></v-text-field>
             <v-text-field  type="password"  primary prepend-icon="lock" label=" Password " v-model="item.password"></v-text-field>
@@ -22,32 +26,74 @@
 </template>
 
 <script>
-import axios from 'axios'
+const axios = require('axios');
+
+const userUrl = "http://localhost:5000/user/signin/";
+
 export default {
   name: "popsignin",
   data() {
     return {
-      error:'',
+      errorMsg:'',
+      loading:'',
       item: {
         username:'',
         password:''
       }
     };
   },
-
+ watch: {
+    user: {
+      handler() {
+        this.errorMsg = "";
+      },
+      deep: true
+    }
+  },
  methods: {   
    async signin() {
-     try{
-        const responce = await axios.post('http://localhost:5000/user/signin',this.item);
-        localStorage.setItem('TOKEN',responce.data.token);
-        localStorage.setItem('USER',responce.data.user);
+     //this.loading = true;
+      // axios
+      //     .post(userUrl, this.item)
+      //     .then((response)=> {
+            
+      //        //console.log('user trying to sign in:', this.item);
+      //        localStorage.token = response;
+      //         //localStorage.setItem('Token', response.data.token);
 
-       this.$router.push({name: 'home'});
-        console.log('user trying to sign in:', this.item);
-     }
-    catch(err){
+      //       setTimeout(()=>{
+      //          //this.loading = false;
+      //          this.$router.push('/signin');
+      //       },10);
+           
+      //      // console.log(result);
+           
+      //     })
+      //     .catch((error) => {
+      //       //this.loading = false;
+      //       this.errorMsg = error.message || response.erro.message;
+      //       console.log(error);
+             
+      //     });
+
+
+      try{
+        var result = await axios.post(userUrl,this.item);
+          console.log('user trying to sign in:', this.item);
+          console.log('The result from server:', result);
+         localStorage.token = result.data.token;
+          console.log('The token sent is:', result.data.token);
+    //     localStorage.setItem('TOKEN',responce.token);
+    //     localStorage.setItem('USER',responce.user);
+            setTimeout(()=>{
+                this.loading = false;
+               this.$router.push('/profile');
+             },100);
+      }
+     catch(error){
       console.log(err);
-      this.error=err && err.responce && err.responce.data && err.responce.data.error;
+      this.errorMsg = error.message || response.error.message;
+    //   this.errorMsg=err.message;// && err.responce && err.responce.data && err.responce.data.error;
     }
    }
   } 
@@ -56,10 +102,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-p.error {
+p.er {
   border: 1px solod #ff5b5f;
-  background-color: bisque;
+  background-color:  #ff5b5f;
   padding: 10px;
+  color: white;
   margin-bottom: 15px;
 }
 </style>

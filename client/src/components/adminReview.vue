@@ -1,5 +1,8 @@
 <template>
-  <v-layout column align-center class="gray lighten-2">
+
+<v-dialog max-width="1800px" max-height="1900px">
+  <v-icon slot="activator" class=" xl10" color="light--gray"  large dark >dashboard</v-icon>
+    <v-layout column align-center class="gray lighten-2">
     <v-toolbar app height="150" scroll-off-screen class="primary">
       <v-toolbar-title @click="$router.push({name:'home'})" class="headline text-Capitalized" darken-1>
         <span  href="/">
@@ -9,6 +12,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
   
+      <v-spacer></v-spacer>
       <v-tooltip bottom>
         <v-icon slot="activator" color="pimary" dark @click="$router.push({name:'home'})">home</v-icon>
         <span>Home | Latest Recipe</span>
@@ -21,6 +25,9 @@
       <v-btn flat dark >Privacy Terms </v-btn>
       <v-spacer></v-spacer>
 
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
       <v-flex v-if= "!authorization">
         <popsignin/>
         <span color="white">Sign In</span>
@@ -34,38 +41,17 @@
       <v-spacer></v-spacer>
       <v-flex v-if= "authorization" >
         <popcreate/>
-        
       </v-flex>
       <v-flex v-if= "authorization" >
         <h5 class="username" v-if= "authorization" >Welcome,{{ user.username }} !</h5>
       </v-flex>
-      <v-spacer></v-spacer>
-      <v-flex v-if="admin" >
-        
-          <adminReview/>
-   
-      </v-flex>
-
-      <v-toolbar-items>
-        <v-btn v-if= "authorization" flat info @click="signOut">Sign Out</v-btn>
-      </v-toolbar-items>
-     <v-spacer></v-spacer>
-        <v-toolbar-items>
-        <v-btn v-if= "authorization" flat info @click="$router.push({name: 'profile'})">Profile</v-btn>
-<v-spacer></v-spacer>
-      </v-toolbar-items> 
+      <v-toolbar-items></v-toolbar-items>
+      <v-btn v-if= "authorization" flat info @click="signOut">Sign Out</v-btn>
     </v-toolbar>
-   
-     
-     
 
-    <imageslider-component/>
 
-    <h3 align="center">Check out the lately published Recipes in Town down here</h3>
-    <div>
-      <p class="error" v-if="error">{{ error }}</p>
-    </div>
-    
+    <h2 align="center">Recently published recipes </h2>
+    <hr>
     <v-container class="my-3">
       <v-layout row wrap>
         <v-flex
@@ -85,7 +71,6 @@
               <h4 color="primary">{{ item.name }}</h4>
               <div class="gray--text">{{ item.shortdesc }}</div>
               <div class="gray--text">At:{{item.createdAt}}</div>
-              <div class="gray--text">By:{{item.by}}</div>
               <div>
                 <span
                   v-if="item && item.createdAt"
@@ -100,8 +85,8 @@
                 <span>{{count}}</span>
               </v-btn>
               
-              <v-btn icon>
-                <v-icon small>bookmark</v-icon>
+              <v-btn icon v-if="user.username = 'Town_Admin'">
+                <v-icon small @click="remove">delete</v-icon>
               </v-btn>
               <v-dialog max-width="1200px">
                 <v-icon slot="activator" color="primary">list</v-icon>
@@ -123,11 +108,9 @@
                                        v-if="item && item.createdAt"
                                       >{{ `${item.createdAt.getDate()}/${item.createdAt.getMonth()}/${item.createdAt.getFullYear()}`}}</span>
                                       </div>
-                                      <h3 align="center">The recipe steps</h3>
+                                      <h3>The recipe steps</h3>
                                       <hr>
                                       <p align="center">{{ item.steps }}</p>
-                                      <hr>
-                                      <br>
                         
                              
                      </v-card-text>
@@ -138,8 +121,8 @@
                          <span>{{count}}</span>
                              </v-btn>
 
-                            <v-btn icon>
-                           <v-icon small>bookmark</v-icon>
+                            <v-btn icon v-if=" user.username = 'Town_Admin'">
+                           <v-icon @click="remove">delete</v-icon>
                               </v-btn>
                      </v-card-actions>
                    </v-card> 
@@ -152,26 +135,28 @@
 
     <v-spacer></v-spacer>
 
-    
+    <p class="error" v-if="error">{{ error }}</p>
   </v-layout>
+
+</v-dialog>
+  
 </template>
 
 <script>
-import imagesliderComponent from "./imagesliderComponent";
+
+
 import popsignin from "./popsignin";
 import popsignup from "./popsignup";
 import popcreate from "./popcreate";
-import adminReview from "./adminReview";
-const axios = require("axios");
-const listURL = "http://localhost:5000/recipes/list/";
+const axios = require('axios');
+const URL = 'http://localhost:5000/recipes/list/';
 
 const TokenUrl = "http://localhost:5000";
 
 export default {
-  name: "homeComponent",
+  name: "adminReview",
   components: {
-    adminReview,
-    imagesliderComponent,
+    
     popsignin,
     popsignup,
     popcreate
@@ -180,8 +165,7 @@ export default {
     return {
       error: "",
       count: 0,
-      user: {},
-      admin:false,
+      user:{},
       authorization: false,
       items: [
         {
@@ -192,65 +176,54 @@ export default {
           shortdesc: "short description",
           at: "date created ",
           file: "file name",
-          likes: ""
+          likes: ""         
         }
-      ]
+      ] 
     };
   },
-  mounted() {
-    fetch(TokenUrl, {
+  mounted () {
+    fetch(TokenUrl,{
       headers: {
-        authorization: `Bearer ${localStorage.token}`
+        authorization: `Bearer ${localStorage.token}`,
+      },
+    }).then(res=> res.json())
+    .then((result)=>{
+     // 
+      console.log('result.user is:',result.user);
+      console.log('result is :',result);
+      if(result.user){
+        this.user = result.user;
+        this.authorization = true;
       }
-    })
-      .then(res => res.json())
-      .then(result => {
-        //
-        console.log("result.user is:", result.user);
-        console.log("result is :", result);
-        if (result.user) {
-          this.user = result.user;
-          this.authorization = true;
-          if(result.user.username === "Town_Admin"){
-           this.admin=true;
-          }
-        } else {
-          this.signOut();
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        this.error = err.message || err.message;
-        //   this.errorMsg=err.message;// && err.responce && err.responce.data && err.responce.data.error;
-      });
+      else{
+        //if no user/ tiken exprd ot logged out
+       // localStorage.removeItem('token');
+       //this.$router.push('/login');
+       this.signOut();
+      }
+    }).catch((err)=>{
+      console.log(err);
+      this.error = err.message || response.err.message;
+    //   this.errorMsg=err.message;// && err.responce && err.responce.data && err.responce.data.error;
+    });
   },
-  created () {
-    //   this.items= 
-axios.get(listURL) 
-  .then( (response)=>{
   
-    console.log(response.data);
-    return response.data;
-  })
-      .catch(function (error) {
-        console.log(error);
-        
-      });
-   
-  },
-
   methods: {
-    add() {
+      add: function() {
       this.count = this.count + 1;
-      this.item.likes = this.count;
-      return this.count;
+      this.item.likes=this.count;
+      return (this.count);
+    }, 
+    
+    remove(){
+      
     },
-    signOut() {
+    signOut(){
       this.authorization = false;
-      localStorage.removeItem("token");
-      this.$router.push({ name: "post" });
+      localStorage.removeItem('token');
+      this.$router.push({name: 'home'});
     }
-   
+    
   }
 };
 </script>
@@ -262,7 +235,7 @@ axios.get(listURL)
   padding: 10px;
   margin-bottom: 15px;
 }
-.username {
+.username{
   color: white;
 }
 </style>

@@ -1,9 +1,25 @@
-import popcreate from '../components/popcreate'
+import profile from '../components/profile'
 import homeComponent from '../components/homeComponent'
 import popsignup from '../components/popsignup'
-import popsignin from '../components/popsignin'
-import adminComponent from '../components/adminComponent'
-//import dashBoard from '../components/dashBoard'
+//import popsignin from '../components/popsignin'
+import postComponent from '../components/postComponent'
+//   function redirect(to, from, next) {
+//         if(localStorage.token ){
+//               next('/profile');
+//           }
+//            else{
+//                 next();
+//             }
+//        } 
+
+//        function isSignedIn(to, from, next) {
+//         if(localStorage.token ){
+//               next('/publish');
+//         }
+//           else{
+//                 next('/home');
+//             }
+//        } 
 
 const routes = [{
         path: '/',
@@ -13,31 +29,21 @@ const routes = [{
     {
         path: '/post',
         name: 'post',
-        component: homeComponent
-    },
-
-    {
-        path: '/publish',
-        name: 'publish',
-        component: popcreate
+        component: postComponent
     },
     {
         path: '/sign-up',
         name: 'signup',
-        component: popsignup    
+        component: popsignup,
+        //beforeRouteEnter:  redirect()
     },
     {
-        path: '/sign-in',
-        name: 'signin',
-        component: popsignin
+        path: '/profile',
+        name: 'profile',
+        component: profile,
+        //beforeRouteEnter: isSignedIn()
     }
-    ,
-    // how can i secure admin route 1. admin loginpage with admin route or other way??
-    {
-        path: '/admin',
-        name: 'admin',
-        component: adminComponent
-    }
+        
 ];
 
 export default routes;

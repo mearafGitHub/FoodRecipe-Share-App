@@ -15,28 +15,28 @@
       return {
         items: [
           {
-            src: "a.jpg"
+            src: "pr.jpg"
           },
           {
-            src: "mk.jpg"
+            src: "f.jpg"
+          },
+          {
+            src: "h.jpg"
+          },
+          {
+            src: "e.jpg"
+          },
+          {
+            src: "f.jpg"
+          },
+          {
+            src: "b.jpg"
           },
           {
             src: "a.jpg"
           },
           {
             src: "c.jpg"
-          },
-          {
-            src: "d.jpg"
-          },
-          {
-            src: "r.jpg"
-          },
-          {
-            src: "pl.jpg"
-          },
-          {
-            src: "qq.jpg"
           }
           
         ]

@@ -168,7 +168,7 @@ const listURL = "http://localhost:5000/recipes/list/";
 const TokenUrl = "http://localhost:5000";
 
 export default {
-  name: "homeComponent",
+  name: "postComponent",
   components: {
     adminReview,
     imagesliderComponent,
@@ -225,8 +225,8 @@ export default {
       });
   },
   created () {
-    //   this.items= 
-axios.get(listURL) 
+    // this.items=
+   axios.get(listURL) 
   .then( (response)=>{
   
     console.log(response.data);

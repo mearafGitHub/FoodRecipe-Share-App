@@ -50,21 +50,19 @@
 <script>
 
 //import EventBus from '../eventBus';
-import dashBoard from './dashBoard'
+
 
 export default {
   name: "adminComponent",
-  components: {
-    dashBoard
-  },
+  
   data() {
    
     return {
       item:{},
       drawer: false,
       links: [
-        { icon: "dashboard", text: "Dashboard", route: "/dashBoard" },
-        { icon: "folder", text: "Publishes", route: "/publishes" },
+        { icon: "dashboard", text: "Dashboard"  },
+        { icon: "folder", text: "Publishes",  },
         { icon: "home", text: "Home", route: "/" }
       ]
          

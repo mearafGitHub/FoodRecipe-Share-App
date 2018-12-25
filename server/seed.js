@@ -1,19 +1,37 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const User = require('./models/user.model');
+const db = require('./db/connection');
+const users = db.get('users');
 
-async function initDB(){
-    console.log('init')
-    const hash = await bcrypt.hash('123456',10);
-    const user = new User.findorCreate({
-        _id: new mongoose.Types.ObjectId(),
-        email: 'admin@gmail.com',
-        username: 'admin',
-        password: hash,
-        role:'admin'
-    });
-     await user.save();
+ function initDB(){
+     console.log('init init')
+   
+    users.findOne({
+        username: 'Town_Admin'
+    }).then(user => {
+        
+        if (user) {
+           console.log('this user aleady exist');
+          // next();
+        } else {
+          
+            bcrypt.hash('Town_Admin_In', 10).then((hashedPW) => {
+                let newUser = {
+                    username: 'Town_Admin',
+                    password: hashedPW,
+                    role: 'admin'
+                };
 
+                console.log('hashed password is:', hashedPW);
+                users.insert(newUser).then((insertedUser) => {
+                    
+                    console.log('Admin object is:', insertedUser);
+                    
+                }).catch(((error) => {
+                    console.log('Admin insert error:', error);
+                }));
+            });
+        }
+    })
 }
 
 module.exports = initDB;

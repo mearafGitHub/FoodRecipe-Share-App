@@ -1,7 +1,7 @@
 <template>
   <v-dialog max-width="800px" max-height="900px">
   
-    <v-icon slot="activator" class="primary" dark>edit
+    <v-icon slot="activator" class=" xl10" color="light--gray"  large dark>add
       <v-span>Publish Recipe</v-span>
     </v-icon>
 
@@ -9,8 +9,18 @@
       <h1 align="center" class="primary pl-3 pt-4 pb-3">Publish Your Recipe | To The World</h1>
 
       <h3 align="center">Add your recipe list</h3>
+      <div v-if="error" class="error" v-html="error">{{ error }}</div>
       <hr>
       <v-form class="pt-2 pb-2 pl-3 pr-3">
+
+       <div class="field" enctype="multipart/formd-data">
+         <label for="file" class="lable">Choose Image</label>
+         <input
+          type="file"
+          refs="file"
+          @change="selectFile"/>
+       </div>
+    
         <b-form-file
           primary
           v-model="item.file"
@@ -22,134 +32,11 @@
         <v-textarea solo label="Brief Description" v-model="item.shortdesc"></v-textarea>
         <v-text-field solo label="Category" v-model="item.category"></v-text-field>
         <v-text-field solo label="Cuisine" v-model="item.cuisine"></v-text-field>
-       <h3>Add the content below</h3>
+        <v-textarea solo label="Explain your Recipe" v-model="item.steps"></v-textarea>
 
-   <v-stepper v-model="e1">
-    <v-stepper-header>
-      <v-stepper-step :complete="e1 > 1" step="1">Step 1</v-stepper-step>
-
-      <v-divider></v-divider>
-
-      <v-stepper-step :complete="e1 > 2" step="2">Step 2</v-stepper-step>
-
-      <v-divider></v-divider>
-
-      <v-stepper-step step="3">Step 3</v-stepper-step>
-
-        <v-divider></v-divider>
-
-      <v-stepper-step step="4">Step 4</v-stepper-step>
-
-        <v-divider></v-divider>
-
-      <v-stepper-step step="5">Step 5</v-stepper-step>
-    </v-stepper-header>
-
-    <v-stepper-items>
-      <v-stepper-content step="1">
-        <v-card
-          class="mb-5"
-          color="white"
-          height="200px"
-        >
-        <v-textarea  label="Explain your Recipe here.." v-model="item.steps.sone"></v-textarea>
-        </v-card>
-
-        <v-btn
-          color="primary"
-          @click="e1 = 2"
-        >
-          Continue
-        </v-btn>
-
-        <v-btn   color="info">Done</v-btn>
-        <v-btn   color="accent">Cancel</v-btn>
-      </v-stepper-content>
-
-      <v-stepper-content step="2">
-        <v-card
-          class="mb-5"
-            color="white"
-          height="200px"
-        >
-        <v-textarea solo label="Explain your Recipe" v-model="item.steps.stwo"></v-textarea>
-        </v-card>
-
-        <v-btn
-          color="primary"
-          @click="e1 = 3"
-        >
-          Continue
-        </v-btn>
-
-         <v-btn   color="info">Done</v-btn>
-        <v-btn   color="accent">Cancel</v-btn>
-      </v-stepper-content>
-
-      <v-stepper-content step="3">
-        <v-card
-          class="mb-5"
-            color="white"
-          height="200px"
-        >
-        <v-textarea solo label="Explain your Recipe" v-model="item.steps.sthre"></v-textarea>
-        </v-card>
-
-        <v-btn
-          color="primary"
-          @click="e1 = 4"
-        >
-          Continue
-        </v-btn>
-
-         <v-btn   color="info">Done</v-btn>
-        <v-btn   color="accent">Cancel</v-btn>
-      </v-stepper-content>
-
-      <v-stepper-content step="4">
-        <v-card
-          class="mb-5"
-            color="white"
-          height="200px"
-        >
-        <v-textarea solo label="Explain your Recipe" v-model="item.steps.sfour"></v-textarea>
-        </v-card>
-
-        <v-btn
-          color="primary"
-          @click="e1 = 5"
-        >
-          Continue
-        </v-btn>
-
-         <v-btn   color="info">Done</v-btn>
-        <v-btn   color="accent">Cancel</v-btn>
-      </v-stepper-content>
-
-      <v-stepper-content step="5">
-        <v-card
-          class="mb-5"
-            color="white"
-          height="200px"
-        >
-        <v-textarea solo label="Explain your Recipe" v-model="item.steps.sfive"></v-textarea>
-        </v-card>
-
-        <v-btn
-          color="primary"
-          @click="e1 = 1"
-        >
-          Continue
-        </v-btn>
-
-         <v-btn   color="info">Done</v-btn>
-        <v-btn   color="accent">Cancel</v-btn>
-      </v-stepper-content>
-    </v-stepper-items>
-  </v-stepper>
 
         <v-tooltip top>
-          <v-icon align="right" slot="activator" color="primary" dark x-large @click="publishRequest">send</v-icon>
+          <v-icon  align="right" slot="activator" color="primary" dark x-large @click="publishRequest">send</v-icon>
 
           <span>Publish</span>
         </v-tooltip>
@@ -158,32 +45,27 @@
 
     <br>
 
-    <div v-if="error" class="error" v-html="error">{{ error }}</div>
+    
   </v-dialog>
 </template>
 <script>
+import axios from "axios";
+const URL = 'http://localhost:5000/recipes/create/';
+const profUrl = 'http://localhost:5000/api/user/profiles/publish/';
 
-
-import axios from 'axios'
-
- //import EventBus from '../eventBus';
+const TokenUrl = "http://localhost:5000";
+const ProfileUrl = "http://localhost:5000/api/user/profiles/";
 
 export default {
   name: "popcreate",
   data() {
     return {
-      e1: 0,
+     
       error: "",
       item: {
-        steps: {
-          sone: "",
-          stwo: "",
-          sthree: "",
-          sfour: "",
-          sfive: ""
-        },
+        steps: "",
         name: "",
-        file: "false",
+        file: "",
         shortdesc: "",
         category: "",
         by: "",
@@ -192,26 +74,70 @@ export default {
       }
     };
   },
-
+  //
+ mounted() {
+    fetch(TokenUrl, {
+      headers: {
+        authorization: `Bearer ${localStorage.token}`
+      }
+    })
+      .then(res => res.json())
+      .then(result => {
+        console.log("result.user is:", result.user);
+        console.log("result.user.username is :", result.user.username);
+        if (result.user.username) {
+          this.user = result.user;
+          this.item.by = result.user.username;
+          console.log("this.user is:", this.user);
+          this.authorization = true;
+        } else {
+          this.signOut();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.error = err.message || err.message;
+        //   this.errorMsg=err.message;// && err.responce && err.responce.data && err.responce.data.error;
+      });
+  },
   methods: {
+    publishRequest() {
+      console.log(this.item);
      
-    publishRequest(){
-       console.log(this.item);
-      
-    //  EventBus.$emit('publishRequested', this.item);
-      
-        try {
-
-       const response = axios.post('http://localhost:5000/recipe/recipeApi/', this.item);
-        console.log(response);
-        } catch (error) {
-       this.item.error = error.response.data.err;
-       }
-       this.item = {};
-
+      axios
+        .post(profUrl, { 
+                  name: this.item.name,
+                  steps: this.item.steps,
+                 
+                  file: this.item.file.name,
+                  shortdesc: this.item.shortdesc,
+                  category: this.item.category,
+                  by: this.item.by,
+                  cuisine: this.item.cuisine,
+                  createdAt: this.item.createdAt
+         })
+        .then((response) => {
+          console.log('server response', response);
+          console.log('recoreded recipes',this.item);
+        })
+        .catch((error)=> {
+          // this.loading = false;
+          console.log(error);
+          this.error=error && error.responce && error.responce.data && error.responce.data.error;
+        });
+      //this.error=err && err.responce && err.responce.data && err.responce.data.error;
+    },
+async selectFile(){
+      const formData = new FormData();
+      this.item.file=this.$refs.file.files[0];
+      try{
+        await axios.post(URL,formData );
+      }
+      catch(err){
+        this.error = err;
+      }
+     
     }
- 
-    
   }
 };
 </script>
